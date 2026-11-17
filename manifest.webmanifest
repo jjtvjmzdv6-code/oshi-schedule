@@ -1,11 +1,10 @@
 {
-  "name": "推し活カレンダー",
+  "name": "ゆめかわ推し活カレンダー",
   "short_name": "推し活カレンダー",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#fffafd",
-  "theme_color": "#fff4f9",
-  "lang": "ja",
+  "background_color": "#fff0f7",
+  "theme_color": "#fff0f7",
   "icons": [
     {
       "src": "icon-192.png",
