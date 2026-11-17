@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff4f8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="推し活カレンダー">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>推し活カレンダー</title>
+<style>
+:root{--pink:#f6c6dc;--deep:#d98fb5;--pale:#fff8fc;--ink:#594653;--muted:#a996a4;--line:#f7e8f0;--white:#fff;--lav:#eee8ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 8% 8%,#fff0f7 0,transparent 34%),radial-gradient(ellipse at 94% 28%,#f3efff 0,transparent 30%),#fffafd;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif}
+header{position:relative;overflow:hidden;padding:calc(22px + env(safe-area-inset-top)) 20px 18px;background:linear-gradient(135deg,#fff4f9 0%,#fff9fd 55%,#f5f1ff 100%);border-bottom:1px solid #f8eaf2}header:after{content:'✧  ˚｡⋆  ♡  ⋆｡˚  ✧';position:absolute;right:15px;bottom:13px;color:#e8b9d1;font-size:15px;letter-spacing:4px;opacity:.8}
+.brand{font-size:11px;letter-spacing:.2em;color:#d58eaf;font-weight:800}.headrow{display:flex;align-items:center;justify-content:space-between;margin-top:7px}h1{font-size:23px;margin:0;font-weight:800;letter-spacing:.04em;color:#76576a}.sub{font-size:12px;color:var(--muted);margin-top:5px}
+main{max-width:650px;margin:auto;padding:16px 16px calc(90px + env(safe-area-inset-bottom))}
+.monthbar{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 14px}.monthbar strong{font-size:18px}.monthbar button{border:1px solid #f6e4ee;background:linear-gradient(145deg,#fff5fa,#f7f3ff);border-radius:13px;padding:8px 13px;color:#cc8eae;font-size:17px}
+.calendar{background:#ffffffd9;border:1px solid #f6e6ef;border-radius:23px;padding:12px 8px;box-shadow:0 8px 24px #e8c9dc24}
+.week,.days{display:grid;grid-template-columns:repeat(7,1fr);text-align:center}.week span{font-size:11px;color:var(--muted);padding:5px 0 10px}.day{min-height:49px;border:0;background:transparent;color:var(--ink);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px}.day.dim{color:#c9bdc3}.day.today{background:#fff0f7;color:#ce8eae;font-weight:800}.day.selected{background:linear-gradient(145deg,#efb9d2,#e5c9ef);color:white;font-weight:800;box-shadow:0 3px 9px #e7bfd6aa}.dotrow{height:5px;display:flex;gap:3px}.dot{width:5px;height:5px;border-radius:50%;background:#e7a9c8}.day.selected .dot{background:white}
+.sectionhead{display:flex;align-items:center;justify-content:space-between;margin:22px 2px 10px}.sectionhead h2{font-size:16px;margin:0}.small{font-size:12px;color:var(--muted)}
+.filters{display:flex;gap:7px;overflow:auto;padding:2px 0 12px}.chip{white-space:nowrap;border:1px solid var(--line);background:white;color:var(--muted);border-radius:99px;padding:8px 12px;font-size:12px}.chip.active{background:linear-gradient(120deg,#fff0f7,#f4efff);border-color:#efcfe0;color:#c985a8;font-weight:700}
+.event{display:flex;gap:12px;background:white;border:1px solid var(--line);border-radius:16px;padding:13px;margin-bottom:9px}.datebox{width:48px;flex-shrink:0;border-radius:13px;background:linear-gradient(145deg,#fff0f7,#f5f0ff);text-align:center;padding:7px 2px;color:#c985a8}.datebox b{font-size:19px;display:block}.datebox span{font-size:10px}.eventbody{min-width:0;flex:1}.eventtop{display:flex;justify-content:space-between;gap:8px}.group{font-size:10px;color:var(--deep);font-weight:800;letter-spacing:.04em}.eventtitle{font-size:14px;font-weight:750;margin:4px 0}.eventmeta{font-size:11px;color:var(--muted)}.eventnote{font-size:11px;color:#786770;margin-top:5px;overflow-wrap:anywhere}.delete{border:0;background:transparent;color:#b9aab1;font-size:18px;padding:0 3px;align-self:flex-start}
+.empty{padding:25px 15px;text-align:center;color:var(--muted);font-size:13px;background:white;border:1px dashed var(--line);border-radius:16px}
+.fab{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom));border:1px solid #e9c3d7;border-radius:99px;background:linear-gradient(135deg,#eebbd3,#dfc8ee);color:white;padding:14px 20px;font-size:14px;font-weight:800;box-shadow:0 7px 20px #e5c5d944}
+.modal{position:fixed;inset:0;background:#34232d66;display:none;align-items:flex-end;justify-content:center;z-index:5}.modal.show{display:flex}.sheet{background:linear-gradient(160deg,#fffafd,#fff5fa);width:100%;max-width:650px;border-radius:22px 22px 0 0;padding:20px 18px calc(22px + env(safe-area-inset-bottom));max-height:90vh;overflow:auto}.sheet h2{font-size:18px;margin:0 0 15px}.field{margin:12px 0}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;background:white;font:inherit;font-size:14px;color:var(--ink)}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions{display:flex;gap:9px;margin-top:17px}.actions button{flex:1;border:0;border-radius:12px;padding:13px;font-weight:750}.cancel{background:#f5edf1;color:var(--muted)}.save{background:linear-gradient(135deg,#eebbd3,#dfc8ee);color:white}
+footer{text-align:center;color:#b4a4ac;font-size:10px;padding:12px 0 4px}
+</style>
+</head>
+<body>
+<header><div class="brand">MY FAVORITE DAYS</div><div class="headrow"><h1>推し活カレンダー</h1><span aria-hidden="true">♡</span></div><div class="sub">推しの予定を、ひとつのカレンダーに。</div></header>
+<main>
+ <div class="monthbar"><button id="prev" aria-label="前の月">‹</button><strong id="monthLabel"></strong><button id="next" aria-label="次の月">›</button></div>
+ <section class="calendar"><div class="week"><span>日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span></div><div class="days" id="days"></div></section>
+ <div class="sectionhead"><h2 id="listTitle">予定</h2><span class="small" id="count"></span></div>
+ <div class="filters" id="filters"></div>
+ <div id="eventList"></div>
+ <footer>予定はこの端末のブラウザ内に保存されます</footer>
+</main>
+<button class="fab" id="add">＋ 予定を追加</button>
+<div class="modal" id="modal"><div class="sheet">
+ <h2>予定を追加</h2>
+ <div class="field"><label for="title">予定名</label><input id="title" placeholder="例：音楽番組出演"></div>
+ <div class="twocol"><div class="field"><label for="group">グループ</label><select id="group"><option>Stray Kids</option><option>ATEEZ</option><option>IVE</option><option>BOYNEXTDOOR</option><option>その他</option></select></div><div class="field"><label for="type">種類</label><select id="type"><option>テレビ・ラジオ</option><option>コンサート</option><option>ファンミーティング</option><option>配信・動画</option><option>発売・カムバック</option><option>授賞式・合同コン</option><option>その他</option></select></div></div>
+ <div class="twocol"><div class="field"><label for="date">日付</label><input id="date" type="date"></div><div class="field"><label for="time">時間</label><input id="time" type="time"></div></div>
+ <div class="field"><label for="place">会場・メモ</label><input id="place" placeholder="任意"></div>
+ <div class="field"><label for="url">公式情報のURL</label><input id="url" type="url" placeholder="任意"></div>
+ <div class="actions"><button class="cancel" id="cancel">キャンセル</button><button class="save" id="save">保存する</button></div>
+</div></div>
+<script>
+const groups=['すべて','Stray Kids','ATEEZ','IVE','BOYNEXTDOOR','その他'];
+const today=new Date(); let view=new Date(today.getFullYear(),today.getMonth(),1), selected=iso(today), filter='すべて';
+let events=[]; try{events=JSON.parse(localStorage.getItem('oshiEvents')||'[]')}catch(e){}
+const $=id=>document.getElementById(id);
+function iso(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function saveData(){localStorage.setItem('oshiEvents',JSON.stringify(events))}
+function render(){
+ $('monthLabel').textContent=`${view.getFullYear()}年 ${view.getMonth()+1}月`;
+ const first=new Date(view.getFullYear(),view.getMonth(),1), start=new Date(first); start.setDate(1-first.getDay());
+ const dayhtml=[]; for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const key=iso(d), has=events.some(e=>e.date===key);dayhtml.push(`<button class="day ${d.getMonth()!==view.getMonth()?'dim':''} ${key===iso(today)?'today':''} ${key===selected?'selected':''}" data-date="${key}">${d.getDate()}<span class="dotrow">${has?'<i class="dot"></i>':''}</span></button>`)}
+ $('days').innerHTML=dayhtml.join('');
+ $('days').querySelectorAll('button').forEach(b=>b.onclick=()=>{selected=b.dataset.date;view=new Date(selected+'T12:00:00');render()});
+ $('filters').innerHTML=groups.map(g=>`<button class="chip ${filter===g?'active':''}" data-filter="${g}">${g}</button>`).join('');
+ $('filters').querySelectorAll('button').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;render()});
+ const list=events.filter(e=>e.date===selected&&(filter==='すべて'||e.group===filter)).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+ $('listTitle').textContent=`${Number(selected.slice(5,7))}月${Number(selected.slice(8,10))}日の予定`;
+ $('count').textContent=`${list.length}件`;
+ $('eventList').innerHTML=list.length?list.map(e=>`<article class="event"><div class="datebox"><b>${e.date.slice(8,10)}</b><span>${e.time||'時間未定'}</span></div><div class="eventbody"><div class="eventtop"><span class="group">${esc(e.group)} ・ ${esc(e.type)}</span><button class="delete" data-id="${e.id}" aria-label="削除">×</button></div><div class="eventtitle">${esc(e.title)}</div>${e.place?`<div class="eventmeta">${esc(e.place)}</div>`:''}${e.url?`<div class="eventnote"><a href="${esc(e.url)}" target="_blank" rel="noopener">公式情報を見る ↗</a></div>`:''}</div></article>`).join(''):'<div class="empty">この日の予定はまだありません。<br>「＋ 予定を追加」から登録できます。</div>';
+ $('eventList').querySelectorAll('.delete').forEach(b=>b.onclick=()=>{if(confirm('この予定を削除しますか？')){events=events.filter(e=>e.id!==b.dataset.id);saveData();render()}});
+}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+$('prev').onclick=()=>{view.setMonth(view.getMonth()-1);render()};$('next').onclick=()=>{view.setMonth(view.getMonth()+1);render()};
+function openModal(){$('date').value=selected;$('title').value='';$('time').value='';$('place').value='';$('url').value='';$('modal').classList.add('show')}
+$('add').onclick=openModal;$('cancel').onclick=()=>$('modal').classList.remove('show');
+$('modal').onclick=e=>{if(e.target===$('modal'))$('modal').classList.remove('show')};
+$('save').onclick=()=>{const title=$('title').value.trim(),date=$('date').value;if(!title||!date){alert('予定名と日付を入力してください');return}events.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),title,group:$('group').value,type:$('type').value,date,time:$('time').value,place:$('place').value.trim(),url:$('url').value.trim()});selected=date;view=new Date(date+'T12:00:00');saveData();$('modal').classList.remove('show');render()};
+render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
